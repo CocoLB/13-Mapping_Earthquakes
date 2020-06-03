@@ -134,7 +134,7 @@ d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geoj
         fillOpacity: 1,
         fillColor: "#ffae42",
         color: "#000000",
-        radius: getRadius(),
+        radius: getRadius(feature.properties.mag),
         stroke: true,
         weight: 0.5
         };
