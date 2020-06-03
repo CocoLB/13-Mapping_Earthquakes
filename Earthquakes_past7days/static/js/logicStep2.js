@@ -124,10 +124,48 @@ L.control.layers(baseMaps).addTo(map);
 
 // Retrieve the earthquake GeoJSON data.
 d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson").then(function(data) {
-  // Creating a GeoJSON layer with the retrieved data.
-  L.geoJson(data).addTo(map);
-  console.log(data)
+    
+    // This function returns the style data for each of the earthquakes we plot on
+    // the map. We pass the magnitude of the earthquake into a function
+    // to calculate the radius.
+    function styleInfo(feature) {
+        return {
+        opacity: 1,
+        fillOpacity: 1,
+        fillColor: "#ffae42",
+        color: "#000000",
+        radius: getRadius(),
+        stroke: true,
+        weight: 0.5
+        };
+    }
+        
+    // This function determines the radius of the earthquake marker based on its magnitude.
+    // Earthquakes with a magnitude of 0 will be plotted with a radius of 1.
+    function getRadius(magnitude) {
+        if (magnitude === 0) {
+            return 1;
+        }
+        return magnitude * 4;
+    }
+
+    // Creating a GeoJSON layer with the retrieved data.
+    L.geoJson(data, {
+        // We turn each feature into a circleMarker on the map.
+         pointToLayer: function(feature, latlng) {
+                  console.log(feature);
+                  return L.circleMarker(latlng);
+        },
+         // We set the style for each circleMarker using our styleInfo function.
+        style: styleInfo
+    }).addTo(map);
 });
+
+
+
+
+
+
 
 
 // Create a style for the lines.
@@ -138,15 +176,3 @@ let myStyle = {
 }
 
 
-// Grabbing our GeoJSON data.
-//d3.json(torontoHoods).then(function(data) {
-//    console.log(data);
-//    L.geoJSON(data).addTo(map)});
-  // Creating a GeoJSON layer with the retrieved data.
-//  L.geoJson(data,{
-//    style: myStyle,
-//	  onEachFeature: function(feature,layer){
-//		  layer.bindPopup("<h2> Neighborhood: " + feature.properties.AREA_NAME + "</h2>");
-//	  }
-//  }).addTo(map);
-//});
